@@ -4961,100 +4961,105 @@ $(document).ready(function () {
               Add to cart
               ------------------------------*/
 
-var cartDOM = document.querySelector(".cart__items");
-var addToCartBtn = document.querySelectorAll(".menu__button");
-var totalCost = document.querySelector(".total__cost");
-var shippingCost = document.querySelector(".shipping__cost");
-var totalPrice = document.querySelector(".total__price");
-var totalCount = document.querySelector(".totalQty");
-var newCartItems = JSON.parse(localStorage.getItem("new_cart_items")) || [];
-totalCount.innerText = newCartItems.totalQty;
-totalCost.innerText = newCartItems.totalPrice;
-document.addEventListener("DOMContentLoaded", loadData);
+var ifEmptyCart = doc.querySelector("#ifEmptyCart");
+var cartDOM = doc.querySelector(".cart__items");
+var addToCartBtn = doc.querySelectorAll(".menu__button");
+var totalCost = doc.querySelector(".total__cost");
+var shippingCost = doc.querySelector(".shipping__cost");
+var totalPrice = doc.querySelector(".total__price");
+var totalCount = doc.querySelector(".totalQty");
+var cart = JSON.parse(localStorage.getItem("cart"));
+totalCount.innerText = cart === null || cart === void 0 ? void 0 : cart.totalQty;
+totalCost.innerText = cart === null || cart === void 0 ? void 0 : cart.totalPrice;
+doc.addEventListener("DOMContentLoaded", loadData); // Save data in localStorage
 
-function orderPrice(price) {
-  if (price === 0) {
-    shippingCost.innerText = 0;
-    newCartItems.shippingCost = 0;
-    totalPrice.innerText = price + newCartItems.shippingCost;
-    localStorage.setItem("new_cart_items", JSON.stringify(newCartItems));
-  } else if (price < 500) {
-    shippingCost.innerText = 60;
-    newCartItems.shippingCost = 60;
-    totalPrice.innerText = price + newCartItems.shippingCost;
-    localStorage.setItem("new_cart_items", JSON.stringify(newCartItems));
-  } else if (price < 1000) {
-    shippingCost.innerText = 50;
-    newCartItems.shippingCost = 50;
-    totalPrice.innerText = price + newCartItems.shippingCost;
-    localStorage.setItem("new_cart_items", JSON.stringify(newCartItems));
-  } else if (price < 1500) {
-    shippingCost.innerText = 40;
-    newCartItems.shippingCost = 40;
-    totalPrice.innerText = price + newCartItems.shippingCost;
-    localStorage.setItem("new_cart_items", JSON.stringify(newCartItems));
-  } else {
-    shippingCost.innerText = 30;
-    newCartItems.shippingCost = 30;
-    totalPrice.innerText = price + newCartItems.shippingCost;
-    localStorage.setItem("new_cart_items", JSON.stringify(newCartItems));
+function saveLocalStorage(data) {
+  localStorage.setItem("cart", JSON.stringify(data));
+}
+
+; // Empry cart merkup
+
+function empryCartMerkup() {
+  if (cart.totalQty === 0) {
+    ifEmptyCart.innerHTML = "\n            <div class=\"empty_cart\">\n                <h3>Your cart is empty\uD83D\uDE22</h3>\n                <img src=\"/img/empty-cart.png\" alt=\"\">\n                <a class=\"btn\" href=\"/menu\">Add Item</a>\n            </div>\n        ";
   }
+
+  ;
+} // Shipping cost counter func
+
+
+function shippingCostCounter(price) {
+  var setShippingCost = function setShippingCost(num) {
+    shippingCost.innerText = num;
+    cart.shippingCost = num;
+    totalPrice.innerText = price + cart.shippingCost;
+    saveLocalStorage(cart);
+  };
+
+  if (price === 0) setShippingCost(0);else if (price < 500) setShippingCost(60);else if (price < 1000) setShippingCost(50);else if (price < 1500) setShippingCost(40);else setShippingCost(30);
 }
 
-if (window.location.pathname === "/cart") {
-  orderPrice(newCartItems.totalPrice);
+; // If the card is not in the localStorage 
+
+var emptyCart = {
+  items: {},
+  totalQty: 0,
+  totalPrice: 0,
+  shippingCost: 0
+};
+
+if (!localStorage.getItem("cart")) {
+  saveLocalStorage(emptyCart);
+  location.reload();
 }
+
+; // Add to cart func
 
 addToCartBtn.forEach(function (btn) {
   btn.addEventListener("click", function () {
+    var newCart = cart;
     var parentElement = btn.parentElement;
-
-    if (!JSON.parse(localStorage.getItem("new_cart_items"))) {
-      var _newCart = {
-        items: {},
-        totalQty: 0,
-        totalPrice: 0,
-        shippingCost: 0
-      };
-      localStorage.setItem("new_cart_items", JSON.stringify(_newCart));
-    }
-
-    var newCart = JSON.parse(localStorage.getItem("new_cart_items"));
-    var newId = parentElement.querySelector("#product__id").value;
+    var id = parentElement.querySelector("#burgerId").value;
+    var name = parentElement.querySelector(".menu__name").innerText;
+    var image = parentElement.querySelector(".menu__img").getAttribute("src");
+    var price = parentElement.querySelector(".menu__price").innerText.replace("BDT ~ ", "");
     var newCartItem = {
-      id: parentElement.querySelector("#product__id").value,
-      name: parentElement.querySelector(".menu__name").innerText,
-      image: parentElement.querySelector(".menu__img").getAttribute("src"),
-      price: parentElement.querySelector(".menu__price").innerText.replace("BDT ~ ", "")
+      id: id,
+      name: name,
+      image: image,
+      price: price
     };
 
-    if (!newCart.items[newId]) {
-      newCart.items[newId] = {
+    if (!newCart.items[id]) {
+      newCart.items[id] = {
         item: newCartItem,
         qty: 1
       };
       newCart.totalQty = newCart.totalQty + 1;
-      newCart.totalPrice = newCart.totalPrice + parseInt(parentElement.querySelector(".menu__price").innerText.replace("BDT ~ ", ""));
-      localStorage.setItem("new_cart_items", JSON.stringify(newCart));
+      newCart.totalPrice = newCart.totalPrice + parseInt(price);
+      saveLocalStorage(newCart);
     } else {
-      newCart.items[newId].qty = newCart.items[newId].qty + 1;
+      newCart.items[id].qty = newCart.items[id].qty + 1;
       newCart.totalQty = newCart.totalQty + 1;
       newCart.totalPrice = newCart.totalPrice + parseInt(newCartItem.price);
-      localStorage.setItem("new_cart_items", JSON.stringify(newCart));
+      saveLocalStorage(newCart);
     }
 
     totalCount.innerText = newCart.totalQty;
     totalCost.innerText = newCart.totalPrice;
   });
-});
+}); // Main cart func and load all cart data;
 
 function loadData() {
-  if (Object.values(newCartItems.items).length > 0) {
-    Object.values(newCartItems.items).forEach(function (product) {
+  empryCartMerkup();
+  var cartItemsArray = Object.values(cart.items);
+
+  if (cartItemsArray.length > 0) {
+    cartItemsArray.forEach(function (product) {
       addItemToTheDOM(product);
-      var cartDOMItems = document.querySelectorAll(".cart_item");
+      var cartDOMItems = doc.querySelectorAll(".cart_item");
       cartDOMItems.forEach(function (individualItem) {
-        if (individualItem.querySelector("#product__id").value === product.item.id) {
+        if (individualItem.querySelector("#burgerId").value === product.item.id) {
           // increrase
           increaseItem(individualItem, product); // decrease
 
@@ -5062,69 +5067,81 @@ function loadData() {
 
           removeItem(individualItem, product);
         }
+
+        ;
       });
     });
   }
+
+  ;
 }
+
+; // Create cart item markup
 
 function addItemToTheDOM(product) {
   // Adding the new Item to the Dom
-  cartDOM.insertAdjacentHTML("afterbegin", "\n        <tr class=\"cart_item\">\n            <input type=\"hidden\" id=\"product__id\" value=\"".concat(product.item.id, "\">\n            <td>\n                <div class=\"products\">\n                    <img src=\"").concat(product.item.image, "\" alt=\"\">\n                    <h6>").concat(product.item.name, "</h6>\n                </div>\n            </td>\n            <td>\n                <div class=\"quantity mt-27\">\n                    <button class=\"minus_btn\" id=\"decreaseCart\" action=\"decrease\"><i\n                            class='bx bx-minus'></i></button>\n                    <span class=\"quantity_count\">").concat(product.qty, "</span>\n                    <button class=\"plus_btn\" id=\"increaseCart\" action=\"increase\"><i\n                            class='bx bx-plus'></i></button>\n                </div>\n            </td>\n            <td>\n                <div class=\"mt-27 price\">\n                    <em>BTD</em> <span>").concat(product.item.price, "</span>\n                </div>\n            </td>\n            <td>\n                <div class=\"mt-27 price total_price\">\n                    <div>\n                        <em>BTD</em>\n                        <span class=\"total_price_count\">").concat(parseInt(product.item.price) * product.qty, "</span>\n                    </div>\n                    <i class='bx bx-x' id=\"removeCart\" action=\"remove\"></i>\n                </div>\n            </td>\n        </tr>\n    "));
+  cartDOM.insertAdjacentHTML("afterbegin", "\n        <tr class=\"cart_item\">\n            <input type=\"hidden\" id=\"burgerId\" value=\"".concat(product.item.id, "\">\n            <td>\n                <div class=\"products\">\n                    <img src=\"").concat(product.item.image, "\" alt=\"\">\n                    <h6>").concat(product.item.name, "</h6>\n                </div>\n            </td>\n            <td>\n                <div class=\"quantity mt-27\">\n                    <button class=\"minus_btn\" id=\"decreaseCart\" action=\"decrease\">\n                        <i class='bx bx-minus'></i>\n                    </button>\n                    <span class=\"quantity_count\">").concat(product.qty, "</span>\n                    <button class=\"plus_btn\" id=\"increaseCart\" action=\"increase\">\n                        <i class='bx bx-plus'></i>\n                    </button>\n                </div>\n            </td>\n            <td>\n                <div class=\"mt-27 price\">\n                    <em>BTD</em> <span>").concat(product.item.price, "</span>\n                </div>\n            </td>\n            <td>\n                <div class=\"mt-27 price total_price\">\n                    <div>\n                        <em>BTD</em>\n                        <span class=\"total_price_count\">").concat(parseInt(product.item.price) * product.qty, "</span>\n                    </div>\n                    <i class='bx bx-x' id=\"removeCart\" action=\"remove\"></i>\n                </div>\n            </td>\n        </tr>\n    "));
 }
 
+; // Increase cart item func
+
 function increaseItem(individualItem, product) {
+  var burgerItem = cart.items[product.item.id];
   individualItem.querySelector("[action='increase']").addEventListener('click', function () {
-    // Actual Array
-    newCartItems.items[product.item.id].qty = newCartItems.items[product.item.id].qty + 1;
-    newCartItems.totalQty = newCartItems.totalQty + 1;
-    newCartItems.totalPrice = newCartItems.totalPrice + parseInt(newCartItems.items[product.item.id].item.price);
-    individualItem.querySelector(".quantity_count").innerText = newCartItems.items[product.item.id].qty;
-    individualItem.querySelector(".total_price_count").innerText = parseInt(newCartItems.items[product.item.id].item.price) * newCartItems.items[product.item.id].qty;
-    totalCount.innerText = newCartItems.totalQty;
-    totalCost.innerText = newCartItems.totalPrice;
-    orderPrice(newCartItems.totalPrice);
-    localStorage.setItem("new_cart_items", JSON.stringify(newCartItems));
+    burgerItem.qty = burgerItem.qty + 1;
+    cart.totalQty = cart.totalQty + 1;
+    cart.totalPrice = cart.totalPrice + parseInt(burgerItem.item.price);
+    individualItem.querySelector(".quantity_count").innerText = burgerItem.qty;
+    individualItem.querySelector(".total_price_count").innerText = parseInt(burgerItem.item.price) * burgerItem.qty;
+    totalCount.innerText = cart.totalQty;
+    totalCost.innerText = cart.totalPrice;
+    shippingCostCounter(cart.totalPrice);
+    saveLocalStorage(cart);
   });
 }
 
-;
+; // Decrease cart item func
 
 function decreaseItem(individualItem, product) {
+  var burgerItem = cart.items[product.item.id];
   individualItem.querySelector("[action='decrease']").addEventListener('click', function () {
-    // all cart items in the dom
-    newCartItems.items[product.item.id].qty = newCartItems.items[product.item.id].qty - 1;
-    newCartItems.totalQty = newCartItems.totalQty - 1;
-    newCartItems.totalPrice = newCartItems.totalPrice - parseInt(newCartItems.items[product.item.id].item.price);
-    individualItem.querySelector(".quantity_count").innerText = newCartItems.items[product.item.id].qty;
-    individualItem.querySelector(".total_price_count").innerText = parseInt(newCartItems.items[product.item.id].item.price) * newCartItems.items[product.item.id].qty;
+    burgerItem.qty = burgerItem.qty - 1;
+    cart.totalQty = cart.totalQty - 1;
+    cart.totalPrice = cart.totalPrice - parseInt(burgerItem.item.price);
+    individualItem.querySelector(".quantity_count").innerText = burgerItem.qty;
+    individualItem.querySelector(".total_price_count").innerText = parseInt(burgerItem.item.price) * burgerItem.qty;
 
     if (product.qty === 0) {
-      delete newCartItems.items[product.item.id];
+      delete cart.items[product.item.id];
       individualItem.remove();
     }
 
     ;
-    totalCount.innerText = newCartItems.totalQty;
-    totalCost.innerText = newCartItems.totalPrice;
-    orderPrice(newCartItems.totalPrice);
-    localStorage.setItem("new_cart_items", JSON.stringify(newCartItems));
+    totalCount.innerText = cart.totalQty;
+    totalCost.innerText = cart.totalPrice;
+    shippingCostCounter(cart.totalPrice);
+    saveLocalStorage(cart);
+    empryCartMerkup();
+  });
+}
+
+; // Remove item from cart func
+
+function removeItem(individualItem, product) {
+  individualItem.querySelector("[action='remove']").addEventListener('click', function () {
+    delete cart.items[product.item.id];
+    cart.totalQty = cart.totalQty - product.qty;
+    cart.totalPrice = cart.totalPrice - product.item.price * product.qty;
+    totalCount.innerText = cart.totalQty;
+    totalCost.innerText = cart.totalPrice;
+    shippingCostCounter(cart.totalPrice);
+    individualItem.remove();
+    saveLocalStorage(cart);
+    empryCartMerkup();
   });
 }
 
 ;
-
-function removeItem(individualItem, product) {
-  individualItem.querySelector("[action='remove']").addEventListener('click', function () {
-    delete newCartItems.items[product.item.id];
-    newCartItems.totalQty = newCartItems.totalQty - product.qty;
-    newCartItems.totalPrice = newCartItems.totalPrice - product.item.price * product.qty;
-    totalCount.innerText = newCartItems.totalQty;
-    totalCost.innerText = newCartItems.totalPrice;
-    orderPrice(newCartItems.totalPrice);
-    individualItem.remove();
-    localStorage.setItem("new_cart_items", JSON.stringify(newCartItems));
-  });
-}
 
 /***/ }),
 

@@ -9,7 +9,7 @@ MIT license       : https://github.com/bidhandev/Mr.-Burger/blob/main/LICENSE
 */
 
 /* Global variable */
-const doc = document;
+let doc = document;
 
 /*----------------------------
               Navigation bar effects on scroll
@@ -31,7 +31,6 @@ const scrollTop = () => {
     }
 };
 window.addEventListener('scroll', scrollTop);
-
 
 const menuBtn = doc.querySelector(".nav-menu-btn");
 const navigation = doc.querySelector(".nav__menu");
@@ -64,126 +63,116 @@ $(document).ready(function () {
 /*----------------------------
               Add to cart
               ------------------------------*/
-const cartDOM = document.querySelector(".cart__items");
-const addToCartBtn = document.querySelectorAll(".menu__button");
-const totalCost = document.querySelector(".total__cost");
-const shippingCost = document.querySelector(".shipping__cost");
-const totalPrice = document.querySelector(".total__price");
-const totalCount = document.querySelector(".totalQty");
-let newCartItems = (JSON.parse(localStorage.getItem("new_cart_items")) || []);
-totalCount.innerText = newCartItems.totalQty;
-totalCost.innerText = newCartItems.totalPrice
-document.addEventListener("DOMContentLoaded", loadData);
+const ifEmptyCart = doc.querySelector("#ifEmptyCart");
+const cartDOM = doc.querySelector(".cart__items");
+const addToCartBtn = doc.querySelectorAll(".menu__button");
+const totalCost = doc.querySelector(".total__cost");
+const shippingCost = doc.querySelector(".shipping__cost");
+const totalPrice = doc.querySelector(".total__price");
+const totalCount = doc.querySelector(".totalQty");
+let cart = JSON.parse(localStorage.getItem("cart"));
+totalCount.innerText = cart?.totalQty;
+totalCost.innerText = cart?.totalPrice;
+doc.addEventListener("DOMContentLoaded", loadData);
 
-function orderPrice(price) {
-    if (price === 0) {
-        shippingCost.innerText = 0;
-        newCartItems.shippingCost = 0;
-        totalPrice.innerText = price + newCartItems.shippingCost;
-        localStorage.setItem("new_cart_items", JSON.stringify(newCartItems));
-    } else if (price < 500) {
-        shippingCost.innerText = 60;
-        newCartItems.shippingCost = 60;
-        totalPrice.innerText = price + newCartItems.shippingCost;
-        localStorage.setItem("new_cart_items", JSON.stringify(newCartItems));
-    } else if (price < 1000) {
-        shippingCost.innerText = 50;
-        newCartItems.shippingCost = 50;
-        totalPrice.innerText = price + newCartItems.shippingCost;
-        localStorage.setItem("new_cart_items", JSON.stringify(newCartItems));
-    } else if (price < 1500) {
-        shippingCost.innerText = 40;
-        newCartItems.shippingCost = 40;
-        totalPrice.innerText = price + newCartItems.shippingCost;
-        localStorage.setItem("new_cart_items", JSON.stringify(newCartItems));
-    } else {
-        shippingCost.innerText = 30;
-        newCartItems.shippingCost = 30;
-        totalPrice.innerText = price + newCartItems.shippingCost;
-        localStorage.setItem("new_cart_items", JSON.stringify(newCartItems));
-    }
+// Save data in localStorage
+function saveLocalStorage(data) {
+    localStorage.setItem("cart", JSON.stringify(data));
+};
+
+// Empry cart merkup
+function empryCartMerkup() {
+    if (cart.totalQty === 0) {
+        ifEmptyCart.innerHTML = `
+            <div class="empty_cart">
+                <h3>Your cart is empty😢</h3>
+                <img src="/img/empty-cart.png" alt="">
+                <a class="btn" href="/menu">Add Item</a>
+            </div>
+        `
+    };
 }
 
+// Shipping cost counter func
+function shippingCostCounter(price) {
+    const setShippingCost = (num) => {
+        shippingCost.innerText = num;
+        cart.shippingCost = num;
+        totalPrice.innerText = price + cart.shippingCost;
+        saveLocalStorage(cart);
+    };
+    if (price === 0) setShippingCost(0);
+    else if (price < 500) setShippingCost(60);
+    else if (price < 1000) setShippingCost(50);
+    else if (price < 1500) setShippingCost(40);
+    else setShippingCost(30);
+};
 
-if (window.location.pathname === "/cart") {
-    orderPrice(newCartItems.totalPrice)
-}
+// If the card is not in the localStorage 
+let emptyCart = { items: {}, totalQty: 0, totalPrice: 0, shippingCost: 0 };
+if (!localStorage.getItem("cart")) {
+    saveLocalStorage(emptyCart)
+    location.reload();
+};
 
-
-
+// Add to cart func
 addToCartBtn.forEach(btn => {
     btn.addEventListener("click", () => {
-        let parentElement = btn.parentElement;
-        if (!JSON.parse(localStorage.getItem("new_cart_items"))) {
-            let newCart = {
-                items: {},
-                totalQty: 0,
-                totalPrice: 0,
-                shippingCost: 0
-            };
-            localStorage.setItem("new_cart_items", JSON.stringify(newCart));
-        }
+        let newCart = cart;
+        const parentElement = btn.parentElement;
+        const id = parentElement.querySelector("#burgerId").value;
+        const name = parentElement.querySelector(".menu__name").innerText;
+        const image = parentElement.querySelector(".menu__img").getAttribute("src");
+        const price = parentElement.querySelector(".menu__price").innerText.replace("BDT ~ ", "");
+        const newCartItem = { id, name, image, price };
 
-        let newCart = JSON.parse(localStorage.getItem("new_cart_items"));
-        const newId = parentElement.querySelector("#product__id").value;
-
-        const newCartItem = {
-            id: parentElement.querySelector("#product__id").value,
-            name: parentElement.querySelector(".menu__name").innerText,
-            image: parentElement.querySelector(".menu__img").getAttribute("src"),
-            price: parentElement.querySelector(".menu__price").innerText.replace("BDT ~ ", ""),
-        }
-
-        if (!newCart.items[newId]) {
-            newCart.items[newId] = {
+        if (!newCart.items[id]) {
+            newCart.items[id] = {
                 item: newCartItem,
                 qty: 1
             };
             newCart.totalQty = newCart.totalQty + 1;
-            newCart.totalPrice = newCart.totalPrice + parseInt(parentElement.querySelector(".menu__price").innerText.replace("BDT ~ ", ""));
-            localStorage.setItem("new_cart_items", JSON.stringify(newCart));
+            newCart.totalPrice = newCart.totalPrice + parseInt(price);
+            saveLocalStorage(newCart);
         } else {
-            newCart.items[newId].qty = newCart.items[newId].qty + 1;
+            newCart.items[id].qty = newCart.items[id].qty + 1;
             newCart.totalQty = newCart.totalQty + 1;
             newCart.totalPrice = newCart.totalPrice + parseInt(newCartItem.price);
-            localStorage.setItem("new_cart_items", JSON.stringify(newCart));
+            saveLocalStorage(newCart);
         }
         totalCount.innerText = newCart.totalQty;
         totalCost.innerText = newCart.totalPrice;
     });
-})
+});
 
-
-
-
+// Main cart func and load all cart data;
 function loadData() {
-    if (Object.values(newCartItems.items).length > 0) {
-        Object.values(newCartItems.items).forEach(product => {
+    empryCartMerkup();
+    const cartItemsArray = Object.values(cart.items);
+    if (cartItemsArray.length > 0) {
+        cartItemsArray.forEach(product => {
             addItemToTheDOM(product);
-            const cartDOMItems = document.querySelectorAll(".cart_item");
+            const cartDOMItems = doc.querySelectorAll(".cart_item");
             cartDOMItems.forEach(individualItem => {
-                if (individualItem.querySelector("#product__id").value === product.item.id) {
+                if (individualItem.querySelector("#burgerId").value === product.item.id) {
                     // increrase
                     increaseItem(individualItem, product);
                     // decrease
                     decreaseItem(individualItem, product);
                     // Removing Element
                     removeItem(individualItem, product);
-
-                }
+                };
             });
         });
-    }
-}
+    };
+};
 
-
-
-
+// Create cart item markup
 function addItemToTheDOM(product) {
     // Adding the new Item to the Dom
     cartDOM.insertAdjacentHTML("afterbegin", `
         <tr class="cart_item">
-            <input type="hidden" id="product__id" value="${product.item.id}">
+            <input type="hidden" id="burgerId" value="${product.item.id}">
             <td>
                 <div class="products">
                     <img src="${product.item.image}" alt="">
@@ -192,11 +181,13 @@ function addItemToTheDOM(product) {
             </td>
             <td>
                 <div class="quantity mt-27">
-                    <button class="minus_btn" id="decreaseCart" action="decrease"><i
-                            class='bx bx-minus'></i></button>
+                    <button class="minus_btn" id="decreaseCart" action="decrease">
+                        <i class='bx bx-minus'></i>
+                    </button>
                     <span class="quantity_count">${product.qty}</span>
-                    <button class="plus_btn" id="increaseCart" action="increase"><i
-                            class='bx bx-plus'></i></button>
+                    <button class="plus_btn" id="increaseCart" action="increase">
+                        <i class='bx bx-plus'></i>
+                    </button>
                 </div>
             </td>
             <td>
@@ -215,51 +206,56 @@ function addItemToTheDOM(product) {
             </td>
         </tr>
     `);
-}
+};
 
+// Increase cart item func
 function increaseItem(individualItem, product) {
+    let burgerItem = cart.items[product.item.id];
     individualItem.querySelector("[action='increase']").addEventListener('click', () => {
-        // Actual Array
-        newCartItems.items[product.item.id].qty = newCartItems.items[product.item.id].qty + 1;
-        newCartItems.totalQty = newCartItems.totalQty + 1;
-        newCartItems.totalPrice = newCartItems.totalPrice + parseInt(newCartItems.items[product.item.id].item.price);
-        individualItem.querySelector(".quantity_count").innerText = newCartItems.items[product.item.id].qty;
-        individualItem.querySelector(".total_price_count").innerText = parseInt(newCartItems.items[product.item.id].item.price) * newCartItems.items[product.item.id].qty;
-        totalCount.innerText = newCartItems.totalQty;
-        totalCost.innerText = newCartItems.totalPrice;
-        orderPrice(newCartItems.totalPrice);
-        localStorage.setItem("new_cart_items", JSON.stringify(newCartItems));
+        burgerItem.qty = burgerItem.qty + 1;
+        cart.totalQty = cart.totalQty + 1;
+        cart.totalPrice = cart.totalPrice + parseInt(burgerItem.item.price);
+        individualItem.querySelector(".quantity_count").innerText = burgerItem.qty;
+        individualItem.querySelector(".total_price_count").innerText = parseInt(burgerItem.item.price) * burgerItem.qty;
+        totalCount.innerText = cart.totalQty;
+        totalCost.innerText = cart.totalPrice;
+        shippingCostCounter(cart.totalPrice);
+        saveLocalStorage(cart);
     });
 };
 
+// Decrease cart item func
 function decreaseItem(individualItem, product) {
+    let burgerItem = cart.items[product.item.id];
     individualItem.querySelector("[action='decrease']").addEventListener('click', () => {
-        // all cart items in the dom
-        newCartItems.items[product.item.id].qty = newCartItems.items[product.item.id].qty - 1;
-        newCartItems.totalQty = newCartItems.totalQty - 1;
-        newCartItems.totalPrice = newCartItems.totalPrice - parseInt(newCartItems.items[product.item.id].item.price);
-        individualItem.querySelector(".quantity_count").innerText = newCartItems.items[product.item.id].qty;
-        individualItem.querySelector(".total_price_count").innerText = parseInt(newCartItems.items[product.item.id].item.price) * newCartItems.items[product.item.id].qty;
+        burgerItem.qty = burgerItem.qty - 1;
+        cart.totalQty = cart.totalQty - 1;
+        cart.totalPrice = cart.totalPrice - parseInt(burgerItem.item.price);
+        individualItem.querySelector(".quantity_count").innerText = burgerItem.qty;
+        individualItem.querySelector(".total_price_count").innerText = parseInt(burgerItem.item.price) * burgerItem.qty;
         if (product.qty === 0) {
-            delete newCartItems.items[product.item.id];
+            delete cart.items[product.item.id];
             individualItem.remove();
         };
-        totalCount.innerText = newCartItems.totalQty;
-        totalCost.innerText = newCartItems.totalPrice;
-        orderPrice(newCartItems.totalPrice);
-        localStorage.setItem("new_cart_items", JSON.stringify(newCartItems));
+        totalCount.innerText = cart.totalQty;
+        totalCost.innerText = cart.totalPrice;
+        shippingCostCounter(cart.totalPrice);
+        saveLocalStorage(cart);
+        empryCartMerkup();
     });
 };
 
+// Remove item from cart func
 function removeItem(individualItem, product) {
     individualItem.querySelector("[action='remove']").addEventListener('click', () => {
-        delete newCartItems.items[product.item.id];
-        newCartItems.totalQty = newCartItems.totalQty - product.qty
-        newCartItems.totalPrice = newCartItems.totalPrice - product.item.price * product.qty;
-        totalCount.innerText = newCartItems.totalQty;
-        totalCost.innerText = newCartItems.totalPrice;
-        orderPrice(newCartItems.totalPrice);
+        delete cart.items[product.item.id];
+        cart.totalQty = cart.totalQty - product.qty
+        cart.totalPrice = cart.totalPrice - product.item.price * product.qty;
+        totalCount.innerText = cart.totalQty;
+        totalCost.innerText = cart.totalPrice;
+        shippingCostCounter(cart.totalPrice);
         individualItem.remove();
-        localStorage.setItem("new_cart_items", JSON.stringify(newCartItems));
+        saveLocalStorage(cart);
+        empryCartMerkup();
     });
-}
+};

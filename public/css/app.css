@@ -1189,6 +1189,28 @@ main.main_cart section.cart .order_summary form button:hover {
   background-color: #e6a047;
 }
 
+main.main_cart section.cart .empty_cart {
+  text-align: center;
+  width: 100%;
+  margin-top: -30px;
+}
+
+main.main_cart section.cart .empty_cart img {
+  width: 450px;
+  margin-top: 30px;
+}
+
+main.main_cart section.cart .empty_cart a.btn {
+  display: block;
+  background-color: #e42700;
+  width: 9%;
+  margin: auto;
+  margin-top: 40px;
+  color: white;
+  border-radius: 10px;
+  font-size: 14px;
+}
+
 /* -------------------------------------------------------------------------
    **. Footer area start 
  ------------------------------------------------------------------------- */

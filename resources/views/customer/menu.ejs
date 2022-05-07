@@ -17,7 +17,7 @@
                 <% burgers.forEach((burger)=> { %>
                     <div class="col-lg-3">
                         <div class="menu__content">
-                            <input type="hidden" name="" id="product__id" value="<%= burger._id %> " />
+                            <input type="hidden" name="" id="burgerId" value="<%= burger._id %> " />
                             <img src="/img/popularBurger/card/<%= burger.image %> " class="menu__img" alt="menuImg">
                             <h6 class="menu__name">
                                 <%= burger.name %>
@@ -41,7 +41,7 @@
 
 
 <!-- menu item add -->
-<div class="cart__items d-none">
+<div class="cart_items d-none">
     <div class="check_out">
         <h4 class="total__cost">0</h4>
     </div>
