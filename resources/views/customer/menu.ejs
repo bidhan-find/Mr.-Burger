@@ -1,0 +1,48 @@
+<!-- Main body content start -->
+<main class="main_menu">
+    <!-- 6. Menu top banner area start -->
+    <div class="menu_topBanner">
+        <div class="text-center">
+            <h1 class="text_1">Welcome to Mr. <span>B</span>urger</h1>
+            <h1 class="text_2">Each ingredient is made in a healthy way</h2>
+        </div>
+    </div>
+    <!-- 6. Menu top banner area end -->
+
+    <!-- 7. All menus area start -->
+    <section class="menus">
+        <div class="container">
+            <h5 class="page_title">All Menus</h5>
+            <div class="row menu_items">
+                <% burgers.forEach((burger)=> { %>
+                    <div class="col-lg-3">
+                        <div class="menu__content">
+                            <input type="hidden" name="" id="product__id" value="<%= burger._id %> " />
+                            <img src="/img/popularBurger/card/<%= burger.image %> " class="menu__img" alt="menuImg">
+                            <h6 class="menu__name">
+                                <%= burger.name %>
+                            </h6>
+                            <span class="menu__price"><em>BDT ~ </em>
+                                <%= burger.price %>
+                            </span>
+                            <button class="button menu__button">
+                                <i class='bx bx-cart'></i>
+                            </button>
+                        </div>
+                    </div>
+                    <% }) %>
+            </div>
+        </div>
+    </section>
+    <!-- 7. All menus area end -->
+
+</main>
+<!-- Main body content end -->
+
+
+<!-- menu item add -->
+<div class="cart__items d-none">
+    <div class="check_out">
+        <h4 class="total__cost">0</h4>
+    </div>
+</div>
