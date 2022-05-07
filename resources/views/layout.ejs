@@ -44,27 +44,23 @@
             <nav class="nav__menu">
                 <i class='bx bx-x nav-close-btn nav-close'></i>
                 <ul class="nav_links">
-                    <li>
-                        <a href="/" class="active-link nav-close">Home</a>
-                    </li>
-                    <li>
-                        <a href="/menu" class="nav-close">Menu</a>
-                    </li>
-                    <li>
-                        <a href="/orders" class="nav-close">Orders</a>
-                    </li>
-                    <li>
-                        <a href="/login" class="nav-close">Login</a>
-                    </li>
-                    <li class="register">
-                        <a href="/register" class="nav-close">Register</a>
-                    </li>
-                    <li class="cart_count">
-                        <a href="/cart">
-                            <i class='bx bx-cart'></i>
-                            <span class="badge badge-pill totalQty">0</span>
-                        </a>
-                    </li>
+                    <li><a href="/" class="active-link nav-close">Home</a></li>
+                    <li><a href="/menu" class="nav-close">Menu</a></li>
+                    <% if(user){ %>
+                        <li><a href="/customer/orders" class="nav-close">Orders</a></li>
+                        <form id="logout" action="/logout" method="POST"></form>
+                        <li><a onclick="document.getElementById('logout').submit()" href="#"
+                                class="nav-close">Logout</a></li>
+                        <%} else{ %>
+                            <li><a href="/login" class="nav-close">Login</a></li>
+                            <li class="register"><a href="/register" class="nav-close">Register</a></li>
+                            <% } %>
+                                <li class="cart_count">
+                                    <a href="/cart">
+                                        <i class='bx bx-cart'></i>
+                                        <span class="badge badge-pill totalQty">0</span>
+                                    </a>
+                                </li>
                 </ul>
             </nav>
             <i class='bx bx-menu nav-menu-btn'></i>

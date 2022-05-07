@@ -5,24 +5,29 @@
         <div class="container">
             <div class="auth_content">
                 <img src="/img/burger.png" alt="">
-                <h5>Create your account</h5>
-                <br>
-                <form>
-                    <div class="input-group mb-3">
-                        <input type="text" class="form-control" placeholder="Full name">
-                    </div>
-                    <div class="input-group mb-3">
-                        <input type="email" class="form-control" placeholder="Email address">
-                    </div>
-                    <div class="input-group mb-3">
-                        <input type="password" class="form-control" placeholder="Password">
-                    </div>
-
-                    <div class="form_action">
-                        <button type="submit">Register</button>
-                        <a href="login.html">Already have account?</a>
-                    </div>
-                </form>
+                <h5 class="mb-4">Create your account</h5>
+                <% if(messages.error){ %>
+                    <p class="text-center text-danger mb-4">
+                        <%= messages.error %>
+                    </p>
+                    <% } %>
+                        <form action="/register" method="POST">
+                            <div class="input-group mb-3">
+                                <input value="<%= messages.name %>" name="name" type="text" class="form-control"
+                                    placeholder="Full name">
+                            </div>
+                            <div class="input-group mb-3">
+                                <input value="<%= messages.email %>" name="email" type="email" class="form-control"
+                                    placeholder="Email address">
+                            </div>
+                            <div class="input-group mb-3">
+                                <input name="password" type="password" class="form-control" placeholder="Password">
+                            </div>
+                            <div class="form_action">
+                                <button type="submit">Register</button>
+                                <a href="login.html">Already have account?</a>
+                            </div>
+                        </form>
             </div>
         </div>
     </section>
