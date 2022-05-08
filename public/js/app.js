@@ -4971,6 +4971,8 @@ var totalCount = doc.querySelector(".totalQty");
 var cart = JSON.parse(localStorage.getItem("cart"));
 totalCount.innerText = cart === null || cart === void 0 ? void 0 : cart.totalQty;
 totalCost.innerText = cart === null || cart === void 0 ? void 0 : cart.totalPrice;
+shippingCost.innerText = cart === null || cart === void 0 ? void 0 : cart.shippingCost;
+totalPrice.innerText = (cart === null || cart === void 0 ? void 0 : cart.totalPrice) + (cart === null || cart === void 0 ? void 0 : cart.shippingCost);
 doc.addEventListener("DOMContentLoaded", loadData); // Save data in localStorage
 
 function saveLocalStorage(data) {

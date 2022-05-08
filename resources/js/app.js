@@ -73,6 +73,8 @@ const totalCount = doc.querySelector(".totalQty");
 let cart = JSON.parse(localStorage.getItem("cart"));
 totalCount.innerText = cart?.totalQty;
 totalCost.innerText = cart?.totalPrice;
+shippingCost.innerText = cart?.shippingCost;
+totalPrice.innerText = cart?.totalPrice + cart?.shippingCost;
 doc.addEventListener("DOMContentLoaded", loadData);
 
 // Save data in localStorage

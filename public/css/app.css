@@ -1175,7 +1175,7 @@ main.main_cart section.cart .order_summary form select {
   padding: 0 7px;
 }
 
-main.main_cart section.cart .order_summary form button {
+main.main_cart section.cart .order_summary .cart_btn {
   padding: 8px 20px;
   background-color: #e42700;
   font-size: 14px;
@@ -1185,7 +1185,7 @@ main.main_cart section.cart .order_summary form button {
   transition: all 0.2s ease;
 }
 
-main.main_cart section.cart .order_summary form button:hover {
+main.main_cart section.cart .order_summary .cart_btn:hover {
   background-color: #e6a047;
 }
 

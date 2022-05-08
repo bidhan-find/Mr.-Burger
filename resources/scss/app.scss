@@ -1015,17 +1015,18 @@ main.main_cart {
                     border-radius: 4px;
                     padding: 0 7px;
                 }
-                button {
-                    padding: 8px 20px;
-                    background-color: $primary;
-                    font-size: 14px;
-                    font-weight: 500;
-                    color: $pure;
-                    border-radius: 8px;
-                    transition: $smooth;
-                    &:hover {
-                        background-color: $secondary;
-                    }
+            }
+
+            .cart_btn {
+                padding: 8px 20px;
+                background-color: $primary;
+                font-size: 14px;
+                font-weight: 500;
+                color: $pure;
+                border-radius: 8px;
+                transition: $smooth;
+                &:hover {
+                    background-color: $secondary;
                 }
             }
         }
