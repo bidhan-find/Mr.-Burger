@@ -4894,7 +4894,8 @@ module.exports = g;
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
-var _this = undefined;
+var _this = undefined,
+    _localStorage;
 
 
 /* 
@@ -4968,20 +4969,27 @@ var totalCost = doc.querySelector(".total__cost");
 var shippingCost = doc.querySelector(".shipping__cost");
 var totalPrice = doc.querySelector(".total__price");
 var totalCount = doc.querySelector(".totalQty");
+var sendCart = doc.querySelector("#sendCart");
+var orderPlacedBtn = doc.querySelector("#orderPlacedBtn");
+var orderPlacedPhone = doc.querySelector("#orderPlacedPhone");
+var orderPlacedAddress = doc.querySelector("#orderPlacedAddress");
 var cart = JSON.parse(localStorage.getItem("cart"));
-totalCount.innerText = cart === null || cart === void 0 ? void 0 : cart.totalQty;
-totalCost.innerText = cart === null || cart === void 0 ? void 0 : cart.totalPrice;
-shippingCost.innerText = cart === null || cart === void 0 ? void 0 : cart.shippingCost;
-totalPrice.innerText = (cart === null || cart === void 0 ? void 0 : cart.totalPrice) + (cart === null || cart === void 0 ? void 0 : cart.shippingCost);
 doc.addEventListener("DOMContentLoaded", loadData); // Save data in localStorage
 
 function saveLocalStorage(data) {
   localStorage.setItem("cart", JSON.stringify(data));
 }
 
-; // Empry cart merkup
+; // 
 
-function empryCartMerkup() {
+var cartData = {
+  phone: "",
+  address: "",
+  paymentType: "",
+  orderCart: (_localStorage = localStorage) === null || _localStorage === void 0 ? void 0 : _localStorage.getItem("cart")
+}; // Empry cart merkup
+
+function emptyCartMerkup() {
   if (cart.totalQty === 0) {
     ifEmptyCart.innerHTML = "\n            <div class=\"empty_cart\">\n                <h3>Your cart is empty\uD83D\uDE22</h3>\n                <img src=\"/img/empty-cart.png\" alt=\"\">\n                <a class=\"btn\" href=\"/menu\">Add Item</a>\n            </div>\n        ";
   }
@@ -5053,7 +5061,35 @@ addToCartBtn.forEach(function (btn) {
 }); // Main cart func and load all cart data;
 
 function loadData() {
-  empryCartMerkup();
+  var _localStorage2;
+
+  // update cart inner text
+  totalCount.innerText = cart === null || cart === void 0 ? void 0 : cart.totalQty;
+  totalCost.innerText = cart === null || cart === void 0 ? void 0 : cart.totalPrice;
+  shippingCost.innerText = cart === null || cart === void 0 ? void 0 : cart.shippingCost;
+  totalPrice.innerText = (cart === null || cart === void 0 ? void 0 : cart.totalPrice) + (cart === null || cart === void 0 ? void 0 : cart.shippingCost);
+  cartData.orderCart = (_localStorage2 = localStorage) === null || _localStorage2 === void 0 ? void 0 : _localStorage2.getItem("cart"); // On change order placed inputs
+
+  orderPlacedPhone.addEventListener("change", function () {
+    return cartData.phone = orderPlacedPhone.value;
+  });
+  orderPlacedAddress.addEventListener("change", function () {
+    return cartData.address = orderPlacedAddress.value;
+  });
+  orderPlacedPaymentType.addEventListener("change", function () {
+    return cartData.paymentType = orderPlacedPaymentType.value;
+  }); // Order placed submit func
+
+  orderPlacedBtn.addEventListener("click", function (event) {
+    event.preventDefault();
+    axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/orders', cartData).then(function (res) {
+      if (res.data.order) {
+        localStorage.removeItem("cart");
+        window.location.href = "/customer/orders";
+      }
+    })["catch"](function (err) {});
+  });
+  emptyCartMerkup();
   var cartItemsArray = Object.values(cart.items);
 
   if (cartItemsArray.length > 0) {
@@ -5090,6 +5126,8 @@ function addItemToTheDOM(product) {
 function increaseItem(individualItem, product) {
   var burgerItem = cart.items[product.item.id];
   individualItem.querySelector("[action='increase']").addEventListener('click', function () {
+    var _localStorage3;
+
     burgerItem.qty = burgerItem.qty + 1;
     cart.totalQty = cart.totalQty + 1;
     cart.totalPrice = cart.totalPrice + parseInt(burgerItem.item.price);
@@ -5099,6 +5137,7 @@ function increaseItem(individualItem, product) {
     totalCost.innerText = cart.totalPrice;
     shippingCostCounter(cart.totalPrice);
     saveLocalStorage(cart);
+    cartData.orderCart = (_localStorage3 = localStorage) === null || _localStorage3 === void 0 ? void 0 : _localStorage3.getItem("cart");
   });
 }
 
@@ -5107,6 +5146,8 @@ function increaseItem(individualItem, product) {
 function decreaseItem(individualItem, product) {
   var burgerItem = cart.items[product.item.id];
   individualItem.querySelector("[action='decrease']").addEventListener('click', function () {
+    var _localStorage4;
+
     burgerItem.qty = burgerItem.qty - 1;
     cart.totalQty = cart.totalQty - 1;
     cart.totalPrice = cart.totalPrice - parseInt(burgerItem.item.price);
@@ -5123,7 +5164,8 @@ function decreaseItem(individualItem, product) {
     totalCost.innerText = cart.totalPrice;
     shippingCostCounter(cart.totalPrice);
     saveLocalStorage(cart);
-    empryCartMerkup();
+    emptyCartMerkup();
+    cartData.orderCart = (_localStorage4 = localStorage) === null || _localStorage4 === void 0 ? void 0 : _localStorage4.getItem("cart");
   });
 }
 
@@ -5131,6 +5173,8 @@ function decreaseItem(individualItem, product) {
 
 function removeItem(individualItem, product) {
   individualItem.querySelector("[action='remove']").addEventListener('click', function () {
+    var _localStorage5;
+
     delete cart.items[product.item.id];
     cart.totalQty = cart.totalQty - product.qty;
     cart.totalPrice = cart.totalPrice - product.item.price * product.qty;
@@ -5139,7 +5183,8 @@ function removeItem(individualItem, product) {
     shippingCostCounter(cart.totalPrice);
     individualItem.remove();
     saveLocalStorage(cart);
-    empryCartMerkup();
+    emptyCartMerkup();
+    cartData.orderCart = (_localStorage5 = localStorage) === null || _localStorage5 === void 0 ? void 0 : _localStorage5.getItem("cart");
   });
 }
 

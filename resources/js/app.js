@@ -70,20 +70,26 @@ const totalCost = doc.querySelector(".total__cost");
 const shippingCost = doc.querySelector(".shipping__cost");
 const totalPrice = doc.querySelector(".total__price");
 const totalCount = doc.querySelector(".totalQty");
+const sendCart = doc.querySelector("#sendCart");
+const orderPlacedBtn = doc.querySelector("#orderPlacedBtn");
+const orderPlacedPhone = doc.querySelector("#orderPlacedPhone");
+const orderPlacedAddress = doc.querySelector("#orderPlacedAddress");
 let cart = JSON.parse(localStorage.getItem("cart"));
-totalCount.innerText = cart?.totalQty;
-totalCost.innerText = cart?.totalPrice;
-shippingCost.innerText = cart?.shippingCost;
-totalPrice.innerText = cart?.totalPrice + cart?.shippingCost;
 doc.addEventListener("DOMContentLoaded", loadData);
 
 // Save data in localStorage
-function saveLocalStorage(data) {
-    localStorage.setItem("cart", JSON.stringify(data));
+function saveLocalStorage(data) { localStorage.setItem("cart", JSON.stringify(data)) };
+
+// 
+let cartData = {
+    phone: "",
+    address: "",
+    paymentType: "",
+    orderCart: localStorage?.getItem("cart")
 };
 
 // Empry cart merkup
-function empryCartMerkup() {
+function emptyCartMerkup() {
     if (cart.totalQty === 0) {
         ifEmptyCart.innerHTML = `
             <div class="empty_cart">
@@ -149,7 +155,33 @@ addToCartBtn.forEach(btn => {
 
 // Main cart func and load all cart data;
 function loadData() {
-    empryCartMerkup();
+    // update cart inner text
+    totalCount.innerText = cart?.totalQty;
+    totalCost.innerText = cart?.totalPrice;
+    shippingCost.innerText = cart?.shippingCost;
+    totalPrice.innerText = cart?.totalPrice + cart?.shippingCost;
+    cartData.orderCart = localStorage?.getItem("cart");
+
+    // On change order placed inputs
+    orderPlacedPhone.addEventListener("change", () => cartData.phone = orderPlacedPhone.value);
+    orderPlacedAddress.addEventListener("change", () => cartData.address = orderPlacedAddress.value);
+    orderPlacedPaymentType.addEventListener("change", () => cartData.paymentType = orderPlacedPaymentType.value);
+
+    // Order placed submit func
+    orderPlacedBtn.addEventListener("click", (event) => {
+        event.preventDefault();
+        axios
+            .post('/orders', cartData)
+            .then((res) => {
+                if (res.data.order) {
+                    localStorage.removeItem("cart");
+                    window.location.href = "/customer/orders";
+                }
+            })
+            .catch(err => { });
+    });
+
+    emptyCartMerkup();
     const cartItemsArray = Object.values(cart.items);
     if (cartItemsArray.length > 0) {
         cartItemsArray.forEach(product => {
@@ -223,6 +255,7 @@ function increaseItem(individualItem, product) {
         totalCost.innerText = cart.totalPrice;
         shippingCostCounter(cart.totalPrice);
         saveLocalStorage(cart);
+        cartData.orderCart = localStorage?.getItem("cart");
     });
 };
 
@@ -243,7 +276,8 @@ function decreaseItem(individualItem, product) {
         totalCost.innerText = cart.totalPrice;
         shippingCostCounter(cart.totalPrice);
         saveLocalStorage(cart);
-        empryCartMerkup();
+        emptyCartMerkup();
+        cartData.orderCart = localStorage?.getItem("cart")
     });
 };
 
@@ -258,6 +292,7 @@ function removeItem(individualItem, product) {
         shippingCostCounter(cart.totalPrice);
         individualItem.remove();
         saveLocalStorage(cart);
-        empryCartMerkup();
+        emptyCartMerkup();
+        cartData.orderCart = localStorage?.getItem("cart")
     });
 };
