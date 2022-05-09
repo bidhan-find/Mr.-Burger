@@ -4924,7 +4924,7 @@ window.addEventListener("scroll", function () {
 var scrollTop = function scrollTop() {
   var scrollTop = doc.getElementById('scroll-top');
 
-  if (_this.scrollY >= 560) {
+  if ((_this === null || _this === void 0 ? void 0 : _this.scrollY) >= 560) {
     scrollTop.classList.add('scroll-top');
   } else {
     scrollTop.classList.remove('scroll-top');
@@ -4969,7 +4969,6 @@ var totalCost = doc.querySelector(".total__cost");
 var shippingCost = doc.querySelector(".shipping__cost");
 var totalPrice = doc.querySelector(".total__price");
 var totalCount = doc.querySelector(".totalQty");
-var sendCart = doc.querySelector("#sendCart");
 var orderPlacedBtn = doc.querySelector("#orderPlacedBtn");
 var orderPlacedPhone = doc.querySelector("#orderPlacedPhone");
 var orderPlacedAddress = doc.querySelector("#orderPlacedAddress");
@@ -4980,8 +4979,7 @@ function saveLocalStorage(data) {
   localStorage.setItem("cart", JSON.stringify(data));
 }
 
-; // 
-
+;
 var cartData = {
   phone: "",
   address: "",
@@ -5068,27 +5066,33 @@ function loadData() {
   totalCost.innerText = cart === null || cart === void 0 ? void 0 : cart.totalPrice;
   shippingCost.innerText = cart === null || cart === void 0 ? void 0 : cart.shippingCost;
   totalPrice.innerText = (cart === null || cart === void 0 ? void 0 : cart.totalPrice) + (cart === null || cart === void 0 ? void 0 : cart.shippingCost);
-  cartData.orderCart = (_localStorage2 = localStorage) === null || _localStorage2 === void 0 ? void 0 : _localStorage2.getItem("cart"); // On change order placed inputs
+  cartData.orderCart = (_localStorage2 = localStorage) === null || _localStorage2 === void 0 ? void 0 : _localStorage2.getItem("cart"); // check if order btn exist
 
-  orderPlacedPhone.addEventListener("change", function () {
-    return cartData.phone = orderPlacedPhone.value;
-  });
-  orderPlacedAddress.addEventListener("change", function () {
-    return cartData.address = orderPlacedAddress.value;
-  });
-  orderPlacedPaymentType.addEventListener("change", function () {
-    return cartData.paymentType = orderPlacedPaymentType.value;
-  }); // Order placed submit func
+  if (orderPlacedBtn) {
+    // On change order placed inputs
+    orderPlacedPhone.addEventListener("change", function () {
+      return cartData.phone = orderPlacedPhone.value;
+    });
+    orderPlacedAddress.addEventListener("change", function () {
+      return cartData.address = orderPlacedAddress.value;
+    });
+    orderPlacedPaymentType.addEventListener("change", function () {
+      return cartData.paymentType = orderPlacedPaymentType.value;
+    }); // Order placed submit func
 
-  orderPlacedBtn.addEventListener("click", function (event) {
-    event.preventDefault();
-    axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/orders', cartData).then(function (res) {
-      if (res.data.order) {
-        localStorage.removeItem("cart");
-        window.location.href = "/customer/orders";
-      }
-    })["catch"](function (err) {});
-  });
+    orderPlacedBtn.addEventListener("click", function () {
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/orders', cartData).then(function (res) {
+        if (res.data.order) {
+          localStorage.removeItem("cart");
+          window.location.href = "/customer/orders";
+        }
+      })["catch"](function (err) {
+        console.log(err);
+      });
+    });
+  }
+
+  ;
   emptyCartMerkup();
   var cartItemsArray = Object.values(cart.items);
 

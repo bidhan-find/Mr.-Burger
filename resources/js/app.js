@@ -24,7 +24,7 @@ window.addEventListener("scroll", function () {
               ------------------------------*/
 const scrollTop = () => {
     const scrollTop = doc.getElementById('scroll-top');
-    if (this.scrollY >= 560) {
+    if (this?.scrollY >= 560) {
         scrollTop.classList.add('scroll-top');
     } else {
         scrollTop.classList.remove('scroll-top');
@@ -70,7 +70,6 @@ const totalCost = doc.querySelector(".total__cost");
 const shippingCost = doc.querySelector(".shipping__cost");
 const totalPrice = doc.querySelector(".total__price");
 const totalCount = doc.querySelector(".totalQty");
-const sendCart = doc.querySelector("#sendCart");
 const orderPlacedBtn = doc.querySelector("#orderPlacedBtn");
 const orderPlacedPhone = doc.querySelector("#orderPlacedPhone");
 const orderPlacedAddress = doc.querySelector("#orderPlacedAddress");
@@ -80,7 +79,6 @@ doc.addEventListener("DOMContentLoaded", loadData);
 // Save data in localStorage
 function saveLocalStorage(data) { localStorage.setItem("cart", JSON.stringify(data)) };
 
-// 
 let cartData = {
     phone: "",
     address: "",
@@ -153,6 +151,7 @@ addToCartBtn.forEach(btn => {
     });
 });
 
+
 // Main cart func and load all cart data;
 function loadData() {
     // update cart inner text
@@ -162,24 +161,28 @@ function loadData() {
     totalPrice.innerText = cart?.totalPrice + cart?.shippingCost;
     cartData.orderCart = localStorage?.getItem("cart");
 
-    // On change order placed inputs
-    orderPlacedPhone.addEventListener("change", () => cartData.phone = orderPlacedPhone.value);
-    orderPlacedAddress.addEventListener("change", () => cartData.address = orderPlacedAddress.value);
-    orderPlacedPaymentType.addEventListener("change", () => cartData.paymentType = orderPlacedPaymentType.value);
+    // check if order btn exist
+    if (orderPlacedBtn) {
+        // On change order placed inputs
+        orderPlacedPhone.addEventListener("change", () => cartData.phone = orderPlacedPhone.value);
+        orderPlacedAddress.addEventListener("change", () => cartData.address = orderPlacedAddress.value);
+        orderPlacedPaymentType.addEventListener("change", () => cartData.paymentType = orderPlacedPaymentType.value);
 
-    // Order placed submit func
-    orderPlacedBtn.addEventListener("click", (event) => {
-        event.preventDefault();
-        axios
-            .post('/orders', cartData)
-            .then((res) => {
-                if (res.data.order) {
-                    localStorage.removeItem("cart");
-                    window.location.href = "/customer/orders";
-                }
-            })
-            .catch(err => { });
-    });
+        // Order placed submit func
+        orderPlacedBtn.addEventListener("click", () => {
+            axios
+                .post('/orders', cartData)
+                .then((res) => {
+                    if (res.data.order) {
+                        localStorage.removeItem("cart");
+                        window.location.href = "/customer/orders";
+                    }
+                })
+                .catch(err => {
+                    console.log(err)
+                });
+        });
+    };
 
     emptyCartMerkup();
     const cartItemsArray = Object.values(cart.items);
