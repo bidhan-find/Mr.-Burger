@@ -711,6 +711,24 @@ main.main_order {
                 }
             }
         }
+
+        .success_alert {
+            display: flex;
+            color: $pure;
+            background-color: #73a043;
+            padding: 10px 30px;
+            align-items: center;
+            margin-bottom: 14px;
+            border-radius: 10px;
+            margin-top: -16px;
+            i {
+                font-size: 20px;
+                margin-right: 5px;
+            }
+            p {
+                margin-bottom: 0rem;
+            }
+        }
     }
     /* -------------------------------------------------------------------------
     8. Orders area end 
@@ -1056,7 +1074,6 @@ main.main_cart {
    12. Cart area end 
  ------------------------------------------------------------------------- */
 }
-
 /* -------------------------------------------------------------------------
    **. Footer area start 
  ------------------------------------------------------------------------- */

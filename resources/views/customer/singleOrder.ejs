@@ -1,0 +1,26 @@
+<!-- Main body content start -->
+<main class="main_deliveryStatus">
+    <!-- 9. Track delivery status area start -->
+    <section class="delivery_status">
+        <div class="container">
+            <div class="status-box">
+                <div class="top_item">
+                    <h5>Track delivery status</h5>
+                    <h6 class="bg-white py-1 rounded-full px-4">
+                        <%= order._id %>
+                    </h6>
+                    <input id="hiddenInput" type="hidden" value="<%= JSON.stringify(order) %> ">
+                </div>
+                <ul>
+                    <li class="status_line" data-status="order_placed"><span>Orderplaced</span></li>
+                    <li class="status_line" data-status="confirmed"><span>Order confirmation</span></li>
+                    <li class="status_line" data-status="prepared"><span>Preparation</span></li>
+                    <li class="status_line" data-status="delivered"><span>Out for delivery</span></li>
+                    <li class="status_line" data-status="completed"><span>Complete</span></li>
+                </ul>
+            </div>
+        </div>
+    </section>
+    <!-- 9. Track delivery status area end -->
+</main>
+<!-- Main body content end -->

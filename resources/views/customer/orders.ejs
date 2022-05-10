@@ -4,6 +4,12 @@
     <section class="orders">
         <div class="container">
             <h5 class="page_title">All Orders</h5>
+            <div id="OPSuccessAlert" role="alert">
+                <div class="success_alert">
+                    <i class='bx bxs-badge-check'></i>
+                    <p id="OPMessage"></p>
+                </div>
+            </div>
             <table class="table table-borderless orders_table">
                 <thead>
                     <tr>
@@ -15,26 +21,37 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td><a class="order_id" href="/deliveryStatus.html">626a9e38ada8232b628667d1</a></td>
-                        <td>98233333333</td>
-                        <td>Madaripur</td>
-                        <td>08:01 PM / 28-04-2022</td>
-                    </tr>
-                    <tr class="order_complete">
-                        <th scope="row">2</th>
-                        <td><a class="order_id" href="#">626a9e38ada8232b628667d1</a></td>
-                        <td>98233333333</td>
-                        <td>Madaripur</td>
-                        <td>08:01 PM / 28-04-2022</td>
-                    </tr>
+                    <% if(orders.length) { %>
+                        <% orders.forEach((order, index)=> {%>
+                            <tr>
+                                <th scope="row">
+                                    <%= index + 1 %>
+                                </th>
+                                <td><a class="order_id" href="/customer/orders/<%= order._id %> "">
+                                        <%= order._id %>
+                                    </a></td>
+                                <td>
+                                    <%= order.phone %>
+                                </td>
+                                <td>
+                                    <%= order.address %>
+                                </td>
+                                <td>
+                                    <%= moment(order.createdAt).format('hh:mm A / DD-MM-YYYY') %>
+                                </td>
+                            </tr>
+                            <% }) %>
+                                <% } %>
+                                    <!-- <tr class=" order_complete">
+                                <th scope="row">2</th>
+                                <td><a class="order_id" href="#">626a9e38ada8232b628667d1</a></td>
+                                <td>98233333333</td>
+                                <td>Madaripur</td>
+                                <td>08:01 PM / 28-04-2022</td>
+                            </tr> -->
                 </tbody>
             </table>
-
-
         </div>
-
     </section>
     <!-- 8. Orders area end -->
 </main>

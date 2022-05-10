@@ -1,8 +1,8 @@
 const Order = require("../../../models/Order");
+const moment = require('moment');
 
 function ordersController() {
     return {
-
         store(req, res) {
             // Validate request
             const { phone, address, paymentType, orderCart } = req.body;
@@ -23,9 +23,8 @@ function ordersController() {
             order.save()
                 .then(result => {
                     Order.populate(result, { path: "customerId" }, (err, placedOrder) => {
-                        req.flash('success', 'Order placed successfully');
                         // Emit event
-                        res.status(200).json({ order });
+                        res.status(200).json({ message: "Order placed successfully", order });
                     });
                 })
                 .catch(err => {
@@ -34,11 +33,24 @@ function ordersController() {
                 });
         },
 
-        index(req, res) {
-            return res.status(200).render("customer/orders");
-        }
-    }
+        async index(req, res) {
+            const orders = await Order.find({ customerId: req.user._id }, null, { sort: { 'createdAt': -1 } })
+            res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
+            return res.status(200).render("customer/orders", { orders, moment: moment });
+        },
 
+        async show(req, res) {
+            if (req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+                const order = await Order.findById(req.params.id);
+                if (req.user._id.toString() === order.customerId.toString()) {
+                    return res.render('customer/singleOrder', { order });
+                }
+                return res.redirect('/');
+            } else {
+                return res.redirect('/');
+            }
+        }
+    };
 };
 
 module.exports = ordersController;

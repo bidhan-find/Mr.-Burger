@@ -833,6 +833,26 @@ main.main_order section.orders .orders_table .order_complete a.order_id {
   text-decoration: line-through !important;
 }
 
+main.main_order section.orders .success_alert {
+  display: flex;
+  color: white;
+  background-color: #73a043;
+  padding: 10px 30px;
+  align-items: center;
+  margin-bottom: 14px;
+  border-radius: 10px;
+  margin-top: -16px;
+}
+
+main.main_order section.orders .success_alert i {
+  font-size: 20px;
+  margin-right: 5px;
+}
+
+main.main_order section.orders .success_alert p {
+  margin-bottom: 0rem;
+}
+
 /* ---------- Order status page styles ---------- */
 
 main.main_deliveryStatus {

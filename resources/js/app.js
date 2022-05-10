@@ -1,4 +1,5 @@
 import axios from "axios";
+import moment from 'moment';
 
 /* 
 Template Name     : Mr. Burger - Real-time burger
@@ -104,7 +105,7 @@ function shippingCostCounter(price) {
     const setShippingCost = (num) => {
         shippingCost.innerText = num;
         cart.shippingCost = num;
-        totalPrice.innerText = price + cart.shippingCost;
+        totalPrice.innerText = price + cart?.shippingCost;
         saveLocalStorage(cart);
     };
     if (price === 0) setShippingCost(0);
@@ -160,6 +161,7 @@ function loadData() {
     shippingCost.innerText = cart?.shippingCost;
     totalPrice.innerText = cart?.totalPrice + cart?.shippingCost;
     cartData.orderCart = localStorage?.getItem("cart");
+    shippingCostCounter(cart?.totalPrice);
 
     // check if order btn exist
     if (orderPlacedBtn) {
@@ -175,6 +177,7 @@ function loadData() {
                 .then((res) => {
                     if (res.data.order) {
                         localStorage.removeItem("cart");
+                        localStorage.setItem("orderPlacedMeg", JSON.stringify(res.data.message))
                         window.location.href = "/customer/orders";
                     }
                 })
@@ -296,6 +299,59 @@ function removeItem(individualItem, product) {
         individualItem.remove();
         saveLocalStorage(cart);
         emptyCartMerkup();
-        cartData.orderCart = localStorage?.getItem("cart")
+        cartData.orderCart = localStorage?.getItem("cart");
     });
 };
+
+
+// Remove alert message after 3 seconds
+const alertMsg = doc.querySelector("#OPSuccessAlert");
+alertMsg?.classList.add("d-none");
+if (localStorage.getItem("orderPlacedMeg")) {
+    alertMsg.classList.remove("d-none");
+    doc.querySelector("#OPMessage").innerText = JSON.parse(localStorage.getItem("orderPlacedMeg"))
+    if (alertMsg) {
+        setTimeout(() => {
+            alertMsg.remove();
+            localStorage.removeItem("orderPlacedMeg");
+        }, 3000);
+    };
+};
+
+
+
+// Change order status
+let statuses = document.querySelectorAll('.status_line');
+let hiddenInput = document.querySelector("#hiddenInput");
+let order = hiddenInput ? hiddenInput.value : null;
+order = JSON.parse(order);
+let time = document.createElement('small');
+
+
+function updateStatus(order) {
+    // Remove old classes
+    statuses.forEach((status) => {
+        status.classList.remove('step-completed');
+        status.classList.remove('current');
+    });
+
+    // Add new classes
+    let stepCompleted = true;
+    statuses.forEach((status) => {
+        let dataProp = status.dataset.status;
+        if (stepCompleted) {
+            status.classList.add('step-completed');
+        }
+
+        if (dataProp === order.status) {
+            stepCompleted = false;
+            time.innerText = moment(order.updatedAt).format('hh:mm A');
+            status.appendChild(time);
+            if (status.nextElementSibling) {
+                status.nextElementSibling.classList.add('current')
+            }
+        }
+    });
+};
+
+updateStatus(order);
