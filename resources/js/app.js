@@ -1,7 +1,3 @@
-import axios from "axios";
-import moment from 'moment';
-import initAdmin from './admin';
-
 /* 
 Template Name     : Mr. Burger - Real-time burger
 File Description  : Main javascript file of the template
@@ -9,6 +5,10 @@ Author            : Bidhan Dev
 Support           : bidhan.d@gmail.com
 MIT license       : https://github.com/bidhandev/Mr.-Burger/blob/main/LICENSE
 */
+import axios from "axios";
+import moment from 'moment';
+import initAdmin from './admin';
+import Noty from 'noty';
 
 /* Global variable */
 let doc = document;
@@ -133,7 +133,6 @@ addToCartBtn.forEach(btn => {
         const image = parentElement.querySelector(".menu__img").getAttribute("src");
         const price = parentElement.querySelector(".menu__price").innerText.replace("BDT ~ ", "");
         const newCartItem = { id, name, image, price };
-
         if (!newCart.items[id]) {
             newCart.items[id] = {
                 item: newCartItem,
@@ -148,6 +147,12 @@ addToCartBtn.forEach(btn => {
             newCart.totalPrice = newCart.totalPrice + parseInt(newCartItem.price);
             saveLocalStorage(newCart);
         }
+        new Noty({
+            type: "success",
+            timeout: 3000,
+            text: "Item added to cart",
+            progressBar: false
+        }).show();
         totalCount.innerText = newCart.totalQty;
         totalCost.innerText = newCart.totalPrice;
     });
@@ -183,7 +188,12 @@ function loadData() {
                     }
                 })
                 .catch(err => {
-                    console.log(err)
+                    new Noty({
+                        type: "error",
+                        timeout: 800,
+                        text: "Something went wrong",
+                        progressBar: false
+                    }).show();
                 });
         });
     };
@@ -301,6 +311,12 @@ function removeItem(individualItem, product) {
         saveLocalStorage(cart);
         emptyCartMerkup();
         cartData.orderCart = localStorage?.getItem("cart");
+        new Noty({
+            type: "success",
+            timeout: 3000,
+            text: "Item remove to cart",
+            progressBar: false
+        }).show();
     });
 };
 
@@ -343,7 +359,6 @@ function updateStatus(order) {
         if (stepCompleted) {
             status.classList.add('step-completed');
         }
-
         if (dataProp === order.status) {
             stepCompleted = false;
             time.innerText = moment(order.updatedAt).format('hh:mm A');
@@ -357,5 +372,70 @@ function updateStatus(order) {
 
 updateStatus(order);
 
+// Socket.io
+let socket = io();
 
-initAdmin();
+// Join
+if (order) {
+    socket.emit('join', `order_${order._id}`);
+};
+
+let adminAreaPath = window.location.pathname;
+
+if (adminAreaPath.includes('admin')) {
+    initAdmin(socket);
+    socket.emit('join', 'adminRoom');
+};
+
+socket.on('orderUpdated', (data) => {
+    const updatedOrder = { ...order };
+    updatedOrder.updatedAt = moment().format();
+    updatedOrder.status = data.status;
+    updateStatus(updatedOrder);
+    new Noty({
+        type: "success",
+        timeout: 3000,
+        text: "Order updated",
+        progressBar: false
+    }).show();
+});
+
+
+const a = [
+    {
+        _id: 1,
+        name: 'Hamburger',
+        image: 'img-1.png',
+        price: 319
+    },
+    {
+        _id: 2,
+        name: 'Hamburger',
+        image: 'img-1.png',
+        price: 319
+    },
+    {
+        _id: 3,
+        name: 'Hamburger',
+        image: 'img-1.png',
+        price: 319
+    },
+    {
+        _id: 4,
+        name: 'Hamburger',
+        image: 'img-1.png',
+        price: 319
+    },
+];
+
+function getShuffledArr(arr) {
+    return arr.reduce(
+        (newArr, _, i) => {
+            var rand = i + (Math.floor(Math.random() * (newArr.length - i)));
+            [newArr[rand], newArr[i]] = [newArr[i], newArr[rand]]
+            return newArr
+        }, [...arr]
+    )
+};
+
+console.log(getShuffledArr(a));

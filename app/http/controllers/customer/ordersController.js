@@ -9,6 +9,8 @@ function ordersController() {
             let cart = JSON.parse(orderCart);
             if (!phone || !address || !paymentType) {
                 req.flash('error', 'All fields are required');
+                req.flash('phone', phone);
+                req.flash('address', address);
                 return res.redirect('/cart');
             };
 
@@ -24,6 +26,8 @@ function ordersController() {
                 .then(result => {
                     Order.populate(result, { path: "customerId" }, (err, placedOrder) => {
                         // Emit event
+                        const eventEmitter = req.app.get('eventEmitter');
+                        eventEmitter.emit('orderPlaced', result);
                         res.status(200).json({ message: "Order placed successfully", order });
                     });
                 })

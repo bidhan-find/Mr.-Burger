@@ -31,8 +31,8 @@ MIT license       : https://github.com/bidhandev/Mr.-Burger/blob/main/LICENSE
 
 /*--------------- imports ---------------*/
 @import "./variables";
-// @import "~noty/src/noty.scss";
-// @import "~noty/src/themes/mint.scss";
+@import "~noty/src/noty.scss";
+@import "~noty/src/themes/mint.scss";
 
 /*--------------- Global Style ---------------*/
 *,
@@ -112,6 +112,12 @@ p {
 main {
     margin-top: 14vh;
 }
+
+.noty_theme__mint {
+    border-radius: 50px !important;
+    padding-left: 8px !important;
+}
+
 /* -------------------------------------------------------------------------
     0. Theme default css end
  ------------------------------------------------------------------------- */

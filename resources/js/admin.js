@@ -1,10 +1,13 @@
 import axios from 'axios';
 import moment from 'moment';
+import Noty from 'noty';
 
-function initAdmin() {
+function initAdmin(socket) {
     const orderTableBody = document.querySelector('#adminOrderTableBody');
     let orders = [];
     let markap;
+
+    // get all orders
     axios
         .get('/admin/orders', {
             headers: {
@@ -15,7 +18,12 @@ function initAdmin() {
             markap = generateMarkap(orders);
             orderTableBody.innerHTML = markap;
         }).catch(err => {
-            console.log(err);
+            new Noty({
+                type: "error",
+                timeout: 800,
+                text: "Something went wrong",
+                progressBar: false
+            }).show();
         })
 
     function renderItems(items) {
@@ -67,7 +75,18 @@ function initAdmin() {
             `;
         }).join('');
     };
-};
 
+    socket.on('orderPlaced', (order) => {
+        new Noty({
+            type: "success",
+            timeout: 3000,
+            text: "New order!!",
+            progressBar: false
+        }).show();
+        orders.unshift(order);
+        orderTableBody.innerHTML = '';
+        orderTableBody.innerHTML = generateMarkap(orders);
+    });
+};
 
 export default initAdmin;

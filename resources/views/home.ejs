@@ -135,86 +135,40 @@
                 </div>
                 <div class="col-lg-9">
                     <div class="row menu_items">
-                        <div class="col-lg-3">
-                            <div class="menu__content">
-                                <img src="/img/popularBurger/card/img-1.png" class="menu__img" alt="menuImg">
-                                <h6 class="menu__name">Hamburger</h6>
-                                <span class="menu__price"><em>BDT ~ </em> 319</span>
-                                <span class="button menu__button">
-                                    <i class='bx bx-cart'></i>
-                                </span>
+
+                        <% burgers.forEach((burger)=> { %>
+                            <div class="col-lg-3">
+                                <div class="menu__content">
+                                    <input type="hidden" name="" id="burgerId" value="<%= burger._id %> " />
+                                    <img src="/img/popularBurger/card/<%= burger.image %> " class="menu__img"
+                                        alt="menuImg">
+                                    <h6 class="menu__name">
+                                        <%= burger.name %>
+                                    </h6>
+                                    <span class="menu__price"><em>BDT ~ </em>
+                                        <%= burger.price %>
+                                    </span>
+                                    <button class="button menu__button">
+                                        <i class='bx bx-cart'></i>
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-lg-3">
-                            <div class="menu__content">
-                                <img src="/img/popularBurger/card/img-2.png" class="menu__img" alt="menuImg">
-                                <h6 class="menu__name">Buffalo Burger</h6>
-                                <span class="menu__price"><em>BDT ~ </em> 230</span>
-                                <span class="button menu__button">
-                                    <i class='bx bx-cart'></i>
-                                </span>
-                            </div>
-                        </div>
-                        <div class="col-lg-3">
-                            <div class="menu__content">
-                                <img src="/img/popularBurger/card/img-3.png" class="menu__img" alt="menuImg">
-                                <h6 class="menu__name">Kind Burger</h6>
-                                <span class="menu__price"><em>BDT ~ </em> 289</span>
-                                <span class="button menu__button">
-                                    <i class='bx bx-cart'></i>
-                                </span>
-                            </div>
-                        </div>
-                        <div class="col-lg-3">
-                            <div class="menu__content">
-                                <img src="/img/popularBurger/card/img-4.png" class="menu__img" alt="menuImg">
-                                <h6 class="menu__name">Barbecue</h6>
-                                <span class="menu__price"><em>BDT ~ </em> 379</span>
-                                <span class="button menu__button">
-                                    <i class='bx bx-cart'></i>
-                                </span>
-                            </div>
-                        </div>
-                        <div class="col-lg-3">
-                            <div class="menu__content">
-                                <img src="/img/popularBurger/card/img-5.png" class="menu__img" alt="menuImg">
-                                <h6 class="menu__name">Beef Steak</h6>
-                                <span class="menu__price"><em>BDT ~ </em> 369</span>
-                                <span class="button menu__button">
-                                    <i class='bx bx-cart'></i>
-                                </span>
-                            </div>
-                        </div>
-                        <div class="col-lg-3">
-                            <div class="menu__content">
-                                <img src="/img/popularBurger/card/img-6.png" class="menu__img" alt="menuImg">
-                                <h6 class="menu__name">Notsureaz</h6>
-                                <span class="menu__price"><em>BDT ~ </em> 799</span>
-                                <span class="button menu__button">
-                                    <i class='bx bx-cart'></i>
-                                </span>
-                            </div>
-                        </div>
-                        <div class="col-lg-3">
-                            <div class="menu__content">
-                                <img src="/img/popularBurger/card/img-7.png" class="menu__img" alt="menuImg">
-                                <h6 class="menu__name">Double Beef</h6>
-                                <span class="menu__price"><em>BDT ~ </em> 366</span>
-                                <span class="button menu__button">
-                                    <i class='bx bx-cart'></i>
-                                </span>
-                            </div>
-                        </div>
-                        <div class="col-lg-3">
-                            <div class="menu__content">
-                                <img src="/img/popularBurger/card/img-8.png" class="menu__img" alt="menuImg">
-                                <h6 class="menu__name">Chicken Burger</h6>
-                                <span class="menu__price"><em>BDT ~ </em> 199</span>
-                                <span class="button menu__button">
-                                    <i class='bx bx-cart'></i>
-                                </span>
-                            </div>
-                        </div>
+                            <% }) %>
+
+
+
+                                <!-- <div class="col-lg-3">
+                                    <div class="menu__content">
+                                        <img src="/img/popularBurger/card/img-1.png" class="menu__img" alt="menuImg">
+                                        <h6 class="menu__name">Hamburger</h6>
+                                        <span class="menu__price"><em>BDT ~ </em> 319</span>
+                                        <span class="button menu__button">
+                                            <i class='bx bx-cart'></i>
+                                        </span>
+                                    </div>
+                                </div> -->
+
+
                     </div>
                 </div>
             </div>

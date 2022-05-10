@@ -61,7 +61,7 @@
                                         <li><a href="/login" class="nav-close">Login</a></li>
                                         <li class="register"><a href="/register" class="nav-close">Register</a></li>
                                         <% } %>
-                                            <% if(user?.role==='customer' ){ %>
+                                            <% if(user?.role==='customer' || !user){ %>
                                                 <li class="cart_count">
                                                     <a href="/cart">
                                                         <i class='bx bx-cart'></i>
@@ -136,8 +136,8 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
 
         <!-- custom js -->
+        <script src="/socket.io/socket.io.js"></script>
         <script src="/js/app.js"></script>
-
 </body>
 
 </html>
