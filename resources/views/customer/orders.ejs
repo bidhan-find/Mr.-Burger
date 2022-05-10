@@ -23,7 +23,7 @@
                 <tbody>
                     <% if(orders.length) { %>
                         <% orders.forEach((order, index)=> {%>
-                            <tr>
+                            <tr class="<%= order.status === 'completed' ? 'order_complete' : '' %>">
                                 <th scope="row">
                                     <%= index + 1 %>
                                 </th>
@@ -37,18 +37,11 @@
                                     <%= order.address %>
                                 </td>
                                 <td>
-                                    <%= moment(order.createdAt).format('hh:mm A / DD-MM-YYYY') %>
+                                    <%= moment(order.createdAt).format('hh:mm A -- DD-MM-YYYY') %>
                                 </td>
                             </tr>
                             <% }) %>
                                 <% } %>
-                                    <!-- <tr class=" order_complete">
-                                <th scope="row">2</th>
-                                <td><a class="order_id" href="#">626a9e38ada8232b628667d1</a></td>
-                                <td>98233333333</td>
-                                <td>Madaripur</td>
-                                <td>08:01 PM / 28-04-2022</td>
-                            </tr> -->
                 </tbody>
             </table>
         </div>

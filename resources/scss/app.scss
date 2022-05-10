@@ -712,6 +712,31 @@ main.main_order {
             }
         }
 
+        .admin_order_table {
+            .order_id {
+                font-weight: 500;
+                color: #1b9f76;
+            }
+            p {
+                line-height: 16px;
+            }
+
+            select {
+                width: 100%;
+                padding: 7px;
+                border-radius: 5px;
+            }
+
+            .admin_order_form {
+                select {
+                    option[selected] {
+                        color: $pure;
+                        background-color: #1b9f76;
+                    }
+                }
+            }
+        }
+
         .success_alert {
             display: flex;
             color: $pure;

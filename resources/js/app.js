@@ -1,5 +1,6 @@
 import axios from "axios";
 import moment from 'moment';
+import initAdmin from './admin';
 
 /* 
 Template Name     : Mr. Burger - Real-time burger
@@ -355,3 +356,6 @@ function updateStatus(order) {
 };
 
 updateStatus(order);
+
+
+initAdmin();

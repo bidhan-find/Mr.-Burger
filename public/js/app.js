@@ -26643,6 +26643,61 @@ module.exports = function(module) {
 
 /***/ }),
 
+/***/ "./resources/js/admin.js":
+/*!*******************************!*\
+  !*** ./resources/js/admin.js ***!
+  \*******************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_1__);
+
+
+
+function initAdmin() {
+  var orderTableBody = document.querySelector('#adminOrderTableBody');
+  var orders = [];
+  var markap;
+  axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/admin/orders', {
+    headers: {
+      "X-Requested-With": "XMLHttpRequest"
+    }
+  }).then(function (res) {
+    orders = res.data;
+    markap = generateMarkap(orders);
+    orderTableBody.innerHTML = markap;
+  })["catch"](function (err) {
+    console.log(err);
+  });
+
+  function renderItems(items) {
+    var parsedItems = Object.values(items);
+    return parsedItems.map(function (menuItem) {
+      return "\n                        <p>".concat(menuItem.item.name, " - ").concat(menuItem.qty, " pcs </p>\n                    ");
+    }).join('');
+  }
+
+  ;
+
+  function generateMarkap(orders) {
+    return orders.map(function (order, index) {
+      return "\n                <tr>\n                    <th scope=\"row\">".concat(index + 1, "</th>\n                    <td>\n                        <p class=\"order_id\">Order Id: ").concat(order._id, "</p>\n                        <div>\n                            ").concat(renderItems(order.items), "\n                        </div>\n                    </td>\n                    <td>").concat(order.customerId.name, "</td>\n                    <td>").concat(order.address, "</td>\n                    <td>\n                        <form action=\"/admin/order/status\" method=\"POST\" class=\"admin_order_form\">\n                            <input type=\"hidden\" name=\"orderId\" value=\"").concat(order._id, "\">\n                            <select name=\"status\" onchange=\"this.form.submit()\" class=\"form-select\">\n                                <option value=\"order_placed\" ").concat(order.status === 'order_placed' ? 'selected' : '', ">\n                                    Placed\n                                </option>\n                                <option value=\"confirmed\" ").concat(order.status === 'confirmed' ? 'selected' : '', ">\n                                    Confirmed\n                                </option>\n                                <option value=\"prepared\" ").concat(order.status === 'prepared' ? 'selected' : '', ">\n                                    Prepared\n                                </option>\n                                <option value=\"delivered\" ").concat(order.status === 'delivered' ? 'selected' : '', ">\n                                    Delivered\n                                </option>\n                                <option value=\"completed\" value=\"completed\" ").concat(order.status === 'completed' ? 'selected' : '', ">\n                                    Completed\n                                </option>\n                            </select>\n                        </form>\n                    </td>\n                    <td>").concat(moment__WEBPACK_IMPORTED_MODULE_1___default()(order.createdAt).format('hh:mm A -- DD-MM-YYYY'), "</td>\n                </tr>\n            ");
+    }).join('');
+  }
+
+  ;
+}
+
+;
+/* harmony default export */ __webpack_exports__["default"] = (initAdmin);
+
+/***/ }),
+
 /***/ "./resources/js/app.js":
 /*!*****************************!*\
   !*** ./resources/js/app.js ***!
@@ -26656,8 +26711,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _admin__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./admin */ "./resources/js/admin.js");
 var _this = undefined,
     _localStorage;
+
 
 
 
@@ -27013,6 +27070,7 @@ function updateStatus(order) {
 
 ;
 updateStatus(order);
+Object(_admin__WEBPACK_IMPORTED_MODULE_2__["default"])();
 
 /***/ }),
 
