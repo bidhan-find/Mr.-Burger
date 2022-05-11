@@ -57,18 +57,20 @@
                                     <form>
                                         <div class="input-group mb-3">
                                             <input value="<%= messages.phone %>" id="orderPlacedPhone" name="phone"
-                                                type="tel" class="form-control" placeholder="Phone number">
+                                                type="tel" class="form-control" placeholder="Phone number" required>
                                         </div>
-                                        <select id="orderPlacedPaymentType" name="paymentType" class="form-select mb-3">
+                                        <select id="orderPlacedPaymentType" name="paymentType" class="form-select mb-3"
+                                            required>
                                             <option selected>Select payment type</option>
                                             <option value="cash-on">Cash on delivery</option>
                                         </select>
                                         <div class="input-group mb-3">
                                             <input value="<%= messages.address %>" id="orderPlacedAddress"
-                                                name="address" type="text" class="form-control" placeholder="Address">
+                                                name="address" type="text" class="form-control" placeholder="Address"
+                                                required>
                                         </div>
                                         <div class="text-right mt-4">
-                                            <button type="submit" class="cart_btn" id="orderPlacedBtn">Order</button>
+                                            <button class="cart_btn" id="orderPlacedBtn">Order</button>
                                         </div>
                                     </form>
                                     <%} else{ %>

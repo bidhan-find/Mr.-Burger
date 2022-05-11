@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 
 // Database connection
-const url = 'mongodb://127.0.0.1:27017/mr-burger';
+const url = `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@cluster0.l9tcw.mongodb.net/${process.env.MONGO_COLLECTION}?retryWrites=true&w=majority`;
+
 mongoose.connect(url, {
     useNewUrlParser: true,
     useUnifiedTopology: true
@@ -13,5 +14,5 @@ connection
     })
     .on('error', function (err) {
         console.log(err);
-        console.log('mongoDB connection fail')
+        console.log('mongoDB connection fail');
     });

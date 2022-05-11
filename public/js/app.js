@@ -29855,27 +29855,13 @@ function initAdmin(socket) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
-/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _admin__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./admin */ "./resources/js/admin.js");
-/* harmony import */ var noty__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! noty */ "./node_modules/noty/lib/noty.js");
-/* harmony import */ var noty__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(noty__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _admin__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./admin */ "./resources/js/admin.js");
+/* harmony import */ var noty__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! noty */ "./node_modules/noty/lib/noty.js");
+/* harmony import */ var noty__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(noty__WEBPACK_IMPORTED_MODULE_2__);
 var _this = undefined,
     _localStorage;
-
-function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
-
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
-function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
-
-function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
-
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 
@@ -29890,7 +29876,6 @@ Author            : Bidhan Dev
 Support           : bidhan.d@gmail.com
 MIT license       : https://github.com/bidhandev/Mr.-Burger/blob/main/LICENSE
 */
-
 
 
 
@@ -30041,7 +30026,7 @@ addToCartBtn.forEach(function (btn) {
       saveLocalStorage(newCart);
     }
 
-    new noty__WEBPACK_IMPORTED_MODULE_3___default.a({
+    new noty__WEBPACK_IMPORTED_MODULE_2___default.a({
       type: "success",
       timeout: 3000,
       text: "Item added to cart",
@@ -30075,15 +30060,25 @@ function loadData() {
       return cartData.paymentType = orderPlacedPaymentType.value;
     }); // Order placed submit func
 
-    orderPlacedBtn.addEventListener("click", function () {
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/orders', cartData).then(function (res) {
-        if (res.data.order) {
+    orderPlacedBtn.addEventListener("click", function (event) {
+      event.preventDefault();
+      fetch('/orders', {
+        method: "POST",
+        body: JSON.stringify(cartData),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }).then(function (res) {
+        return res.json();
+      }).then(function (json) {
+        if (json) {
+          console.log(json);
           localStorage.removeItem("cart");
-          localStorage.setItem("orderPlacedMeg", JSON.stringify(res.data.message));
+          localStorage.setItem("orderPlacedMeg", JSON.stringify(json.message));
           window.location.href = "/customer/orders";
         }
       })["catch"](function (err) {
-        new noty__WEBPACK_IMPORTED_MODULE_3___default.a({
+        new noty__WEBPACK_IMPORTED_MODULE_2___default.a({
           type: "error",
           timeout: 800,
           text: "Something went wrong",
@@ -30190,7 +30185,7 @@ function removeItem(individualItem, product) {
     saveLocalStorage(cart);
     emptyCartMerkup();
     cartData.orderCart = (_localStorage5 = localStorage) === null || _localStorage5 === void 0 ? void 0 : _localStorage5.getItem("cart");
-    new noty__WEBPACK_IMPORTED_MODULE_3___default.a({
+    new noty__WEBPACK_IMPORTED_MODULE_2___default.a({
       type: "success",
       timeout: 3000,
       text: "Item remove to cart",
@@ -30243,7 +30238,7 @@ function updateStatus(order) {
 
     if (dataProp === order.status) {
       stepCompleted = false;
-      time.innerText = moment__WEBPACK_IMPORTED_MODULE_1___default()(order.updatedAt).format('hh:mm A');
+      time.innerText = moment__WEBPACK_IMPORTED_MODULE_0___default()(order.updatedAt).format('hh:mm A');
       status.appendChild(time);
 
       if (status.nextElementSibling) {
@@ -30266,7 +30261,7 @@ if (order) {
 var adminAreaPath = window.location.pathname;
 
 if (adminAreaPath.includes('admin')) {
-  Object(_admin__WEBPACK_IMPORTED_MODULE_2__["default"])(socket);
+  Object(_admin__WEBPACK_IMPORTED_MODULE_1__["default"])(socket);
   socket.emit('join', 'adminRoom');
 }
 
@@ -30274,50 +30269,16 @@ if (adminAreaPath.includes('admin')) {
 socket.on('orderUpdated', function (data) {
   var updatedOrder = _objectSpread({}, order);
 
-  updatedOrder.updatedAt = moment__WEBPACK_IMPORTED_MODULE_1___default()().format();
+  updatedOrder.updatedAt = moment__WEBPACK_IMPORTED_MODULE_0___default()().format();
   updatedOrder.status = data.status;
   updateStatus(updatedOrder);
-  new noty__WEBPACK_IMPORTED_MODULE_3___default.a({
+  new noty__WEBPACK_IMPORTED_MODULE_2___default.a({
     type: "success",
     timeout: 3000,
     text: "Order updated",
     progressBar: false
   }).show();
 });
-var a = [{
-  _id: 1,
-  name: 'Hamburger',
-  image: 'img-1.png',
-  price: 319
-}, {
-  _id: 2,
-  name: 'Hamburger',
-  image: 'img-1.png',
-  price: 319
-}, {
-  _id: 3,
-  name: 'Hamburger',
-  image: 'img-1.png',
-  price: 319
-}, {
-  _id: 4,
-  name: 'Hamburger',
-  image: 'img-1.png',
-  price: 319
-}];
-
-function getShuffledArr(arr) {
-  return arr.reduce(function (newArr, _, i) {
-    var rand = i + Math.floor(Math.random() * (newArr.length - i));
-    var _ref = [newArr[i], newArr[rand]];
-    newArr[rand] = _ref[0];
-    newArr[i] = _ref[1];
-    return newArr;
-  }, _toConsumableArray(arr));
-}
-
-;
-console.log(getShuffledArr(a));
 
 /***/ }),
 

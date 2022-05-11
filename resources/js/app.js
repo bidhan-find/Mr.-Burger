@@ -5,7 +5,6 @@ Author            : Bidhan Dev
 Support           : bidhan.d@gmail.com
 MIT license       : https://github.com/bidhandev/Mr.-Burger/blob/main/LICENSE
 */
-import axios from "axios";
 import moment from 'moment';
 import initAdmin from './admin';
 import Noty from 'noty';
@@ -177,13 +176,21 @@ function loadData() {
         orderPlacedPaymentType.addEventListener("change", () => cartData.paymentType = orderPlacedPaymentType.value);
 
         // Order placed submit func
-        orderPlacedBtn.addEventListener("click", () => {
-            axios
-                .post('/orders', cartData)
-                .then((res) => {
-                    if (res.data.order) {
+        orderPlacedBtn.addEventListener("click", (event) => {
+            event.preventDefault();
+            fetch('/orders', {
+                method: "POST",
+                body: JSON.stringify(cartData),
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+                .then(res => res.json())
+                .then(json => {
+                    if (json) {
+                        console.log(json);
                         localStorage.removeItem("cart");
-                        localStorage.setItem("orderPlacedMeg", JSON.stringify(res.data.message))
+                        localStorage.setItem("orderPlacedMeg", JSON.stringify(json.message))
                         window.location.href = "/customer/orders";
                     }
                 })
@@ -336,14 +343,12 @@ if (localStorage.getItem("orderPlacedMeg")) {
 };
 
 
-
 // Change order status
 let statuses = document.querySelectorAll('.status_line');
 let hiddenInput = document.querySelector("#hiddenInput");
 let order = hiddenInput ? hiddenInput.value : null;
 order = JSON.parse(order);
 let time = document.createElement('small');
-
 
 function updateStatus(order) {
     // Remove old classes
@@ -399,43 +404,3 @@ socket.on('orderUpdated', (data) => {
         progressBar: false
     }).show();
 });
-
-
-const a = [
-    {
-        _id: 1,
-        name: 'Hamburger',
-        image: 'img-1.png',
-        price: 319
-    },
-    {
-        _id: 2,
-        name: 'Hamburger',
-        image: 'img-1.png',
-        price: 319
-    },
-    {
-        _id: 3,
-        name: 'Hamburger',
-        image: 'img-1.png',
-        price: 319
-    },
-    {
-        _id: 4,
-        name: 'Hamburger',
-        image: 'img-1.png',
-        price: 319
-    },
-];
-
-function getShuffledArr(arr) {
-    return arr.reduce(
-        (newArr, _, i) => {
-            var rand = i + (Math.floor(Math.random() * (newArr.length - i)));
-            [newArr[rand], newArr[i]] = [newArr[i], newArr[rand]]
-            return newArr
-        }, [...arr]
-    )
-};
-
-console.log(getShuffledArr(a));
